@@ -70,7 +70,7 @@ Need an action type we don't have yet (payouts, access grants, deployments …)?
 - Tridris is a hosted service. This repository holds documentation and example integration code only, not the Tridris software.
 - Hosted on SOC 2 Type II infrastructure. Tridris never stores card or bank details.
 - Records use Ed25519 signatures (RFC 8032), canonical JSON (RFC 8785) and SHA-256, in AAR (Agent Action Receipt), an open record format designed by Tridris. Specification on request.
-- Example code in [`examples/`](examples/) is licensed under [MIT No Attribution](LICENSE-EXAMPLES): copy it freely. Documentation © Tridris, all rights reserved.
+- © Tridris. All rights reserved. The example code may be used only to connect your agents to Tridris; see the [license](LICENSE).
 
 *Names are used to describe where agents are built. Tridris is not affiliated with or endorsed by these companies.*
 

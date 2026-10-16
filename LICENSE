@@ -1,0 +1,34 @@
+Tridris Repository License
+
+Copyright (c) 2026 Tridris. All rights reserved, except as granted below.
+
+This repository contains documentation and example code for connecting to the
+Tridris service ("the Service"). It does not contain the Service's software.
+
+1. Example code. You may use, copy and modify the code in the examples/
+   directory ("the Example Code") only to connect your own software or AI agents
+   to the Service, while you have authorized access to the Service.
+
+2. Restrictions. You may not:
+   a. use the Example Code, or anything derived from it, with any service other
+      than the Service;
+   b. distribute, publish, sublicense or sell the Example Code, alone or as part
+      of a library, SDK, template or tool, except inside your own application
+      that uses the Service;
+   c. use the Example Code, the documentation or anything learned from this
+      repository to build, or help build, a product that competes with the
+      Service.
+
+3. Documentation. You may read the documentation and share links to it. You may
+   not copy, republish or adapt it without written permission from Tridris.
+
+4. Trademarks. No right is granted to use the Tridris name or logos.
+
+5. No warranty. Everything in this repository is provided "as is", without
+   warranty of any kind. To the extent the law allows, Tridris is not liable for
+   any claim, damage or loss arising from its use.
+
+6. Termination. These rights end automatically if you break these terms. When
+   they end, you must stop using the Example Code and delete copies of it.
+
+Questions or permissions: info@tridris.com
