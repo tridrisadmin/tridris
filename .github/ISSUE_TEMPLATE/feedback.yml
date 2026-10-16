@@ -1,0 +1,26 @@
+name: Feedback
+description: Tell us what worked, what didn't, or what's missing.
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for trying Tridris. **Never paste agent tokens, developer view links or personal data here**: this page is public."
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of feedback?
+      options: [Something worked well, Something was confusing, Something didn't work, Something is missing]
+    validations:
+      required: true
+  - type: input
+    id: built-with
+    attributes:
+      label: What is your agent built with?
+      placeholder: "For example: Claude Agent SDK, LangGraph with GPT, n8n, our own code"
+  - type: textarea
+    id: details
+    attributes:
+      label: Tell us more
+      description: What you tried, what you expected, and what happened.
+    validations:
+      required: true

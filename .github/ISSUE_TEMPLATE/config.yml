@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Request access to try Tridris
+    url: https://tridris.com/partner-with-us/
+    about: Ask for an agent token and your private developer view. Or email info@tridris.com.
+  - name: Security issue
+    url: mailto:info@tridris.com
+    about: Please report security issues privately by email, not in a public issue.

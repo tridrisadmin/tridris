@@ -1,0 +1,24 @@
+name: Request an action type
+description: An action your agents take that Tridris should check, trace and seal.
+labels: [action-request]
+body:
+  - type: markdown
+    attributes:
+      value: "Today Tridris covers six actions for customer-support agents. Tell us what your agents do. **No tokens, links or personal data**: this page is public."
+  - type: input
+    id: action
+    attributes:
+      label: The action
+      placeholder: "For example: pay a supplier invoice, grant admin access, deploy to production"
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: The limits you'd want
+      placeholder: "For example: up to $5,000 runs on its own, more needs the controller, never to a new supplier"
+  - type: input
+    id: system
+    attributes:
+      label: The system it acts on
+      placeholder: "For example: Stripe, NetSuite, Okta, GitHub"
