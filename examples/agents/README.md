@@ -18,6 +18,9 @@ pip install anthropic            # or: openai, google-genai
 
 export TRIDRIS_URL="https://<the API address from your developer view>"
 export TRIDRIS_AGENT_TOKEN="aat_..."
+# Or, for an organization: let the agent register itself with your Connect key (Tridris -> Settings)
+# and leave TRIDRIS_AGENT_TOKEN unset. It appears in Tridris -> Agents as Needs review.
+# export TRIDRIS_CONNECT_KEY="tck_..."  TRIDRIS_AGENT_NAME="Claude support agent"
 
 export ANTHROPIC_API_KEY=...                         # Claude
 # export OPENAI_API_KEY=... OPENAI_MODEL=...         # OpenAI

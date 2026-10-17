@@ -17,6 +17,7 @@ Money is always integer cents. Requests and responses are JSON.
 | `POST /v1/actions/{action_id}/result` | Decision-only mode: report what your system did with an authorized action. |
 | `GET /v1/demo/store` | Demo only: the sample customers and orders your agent can act on. |
 | `GET /.well-known/aar-keys.json` | The public keys that sign records and authorizations. No token needed. |
+| `POST /v1/agents/register` | For organizations: an agent registers itself with the organization's **Connect key** and gets its own token. |
 
 ## POST /v1/actions
 
@@ -104,6 +105,7 @@ Need another action type? [Request it](../../../issues/new/choose).
 |---|---|
 | `within_limits` | Within all limits |
 | `agent_inactive` | This agent is switched off |
+| `agent_pending_review` | This agent registered itself and is waiting for a person to approve it (when the organization blocks new agents until approved) |
 | `action_not_allowed` | This agent may not take this action type |
 | `velocity_exceeded` | Hourly limit of actions reached |
 | `customer_action_limit` | Daily limit of actions for this customer reached |
@@ -160,6 +162,28 @@ Decision-only mode. After your system runs (or fails to run) an authorized actio
 
 Made-up data. IDs change when the demo is reset.
 
+## POST /v1/agents/register
+
+For organizations connecting their own agents. Instead of an agent token, send the organization's Connect key (Tridris → Settings):
+
+```
+Authorization: Bearer tck_...
+```
+
+```json
+{ "name": "Returns assistant", "platform": "n8n", "owner": "Operations team", "purpose": "Handles return requests", "capabilities": ["Refund", "Store credit", "Send email"] }
+```
+
+`name` and `platform` are required. Call it once when the agent starts. Response, `201`:
+
+```json
+{ "agent_id": "…", "token": "aat_…", "status": "pending_review" }
+```
+
+Keep the token as a secret; it is shown only once. The agent appears in Tridris → Agents as **Needs review**, with what it says it can do. Until a person approves it, its actions are either watched (they run, and every decision is recorded with what enforcement would have done) or refused with `agent_pending_review`, as the organization chose in Settings.
+
+Registering again with the same name and platform while still waiting returns `200` with the same `agent_id` and a new token. Once approved, it returns `409 already_registered`: keep using the token you have.
+
 ## Errors
 
 Errors are JSON with `error` and `message`.
@@ -167,9 +191,10 @@ Errors are JSON with `error` and `message`.
 | HTTP | `error` | What to do |
 |---|---|---|
 | 400 | `invalid_request` | Fix the request; `message` names the field |
-| 401 | `unauthorized` | Check the agent token |
+| 401 | `unauthorized` | Check the agent token (or the Connect key, for registering) |
 | 404 | `not_found` | Not one of your agent's actions, or a wrong ID |
 | 409 | `idempotency_conflict` | That key was used for a different request; use a new key |
+| 409 | `already_registered` | This agent is already approved; keep using its token |
 | 503 | `system_unavailable` | Nothing ran. Retry with the same idempotency key |
 
 Tridris fails closed: if a check, its database or the sealing service is unavailable, the action does not run.

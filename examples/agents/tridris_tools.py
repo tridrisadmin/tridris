@@ -14,6 +14,12 @@ import uuid
 
 TRIDRIS_URL = os.environ.get("TRIDRIS_URL", "").rstrip("/")
 TRIDRIS_AGENT_TOKEN = os.environ.get("TRIDRIS_AGENT_TOKEN", "")
+# Optional: your organization's Connect key. With it and no agent token, the agent registers itself on start-up
+# and appears in Tridris as Needs review. Its token is kept in TOKEN_FILE (readable only by you), never printed.
+TRIDRIS_CONNECT_KEY = os.environ.get("TRIDRIS_CONNECT_KEY", "")
+TRIDRIS_AGENT_NAME = os.environ.get("TRIDRIS_AGENT_NAME", "Support agent (example)")
+TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".tridris-agent-token")
+PLATFORMS = {"claude": "Claude", "openai": "OpenAI", "gemini": "Gemini", "grok": "Grok"}
 
 SYSTEM_PROMPT = (
     "You are a customer-support agent for an online store. Use the tools to look up orders and to take actions. "
@@ -146,6 +152,39 @@ def run_tool(name: str, args: dict, run_id: str) -> str:
     return json.dumps(result)
 
 
+def register(platform: str) -> None:
+    """Registers this agent with the Connect key, once, if it has no agent token yet."""
+    global TRIDRIS_AGENT_TOKEN
+    if TRIDRIS_AGENT_TOKEN or not TRIDRIS_CONNECT_KEY:
+        return
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE, encoding="utf-8") as f:
+            TRIDRIS_AGENT_TOKEN = f.read().strip()
+        return
+    if not TRIDRIS_URL:
+        raise SystemExit("Set TRIDRIS_URL first.")
+    body = {
+        "name": TRIDRIS_AGENT_NAME,
+        "platform": platform,
+        "purpose": "Customer support for an online store",
+        "capabilities": ["Look up orders", "Refund", "Store credit", "Cancel order", "Discount code"],
+    }
+    req = urllib.request.Request(TRIDRIS_URL + "/v1/agents/register", data=json.dumps(body).encode(), method="POST")
+    req.add_header("Authorization", f"Bearer {TRIDRIS_CONNECT_KEY}")
+    req.add_header("Content-Type", "application/json")
+    try:
+        with urllib.request.urlopen(req, timeout=15) as res:
+            TRIDRIS_AGENT_TOKEN = json.loads(res.read())["token"]
+    except urllib.error.HTTPError as e:
+        err = json.loads(e.read() or b"{}")
+        raise SystemExit(f"Could not register with Tridris: {err.get('message', e.code)}")
+    fd = os.open(TOKEN_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(TRIDRIS_AGENT_TOKEN)
+    print(f"[Tridris] Registered as \"{TRIDRIS_AGENT_NAME}\". It shows in Tridris -> Agents as Needs review until someone approves it.")
+
+
 def new_run_id(provider: str) -> str:
-    """Groups every action from one conversation in Tridris."""
+    """Groups every action from one conversation in Tridris. Registers the agent first if it uses a Connect key."""
+    register(PLATFORMS.get(provider, provider))
     return f"{provider}-chat-{uuid.uuid4().hex[:8]}"
