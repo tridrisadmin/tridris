@@ -112,11 +112,19 @@ Need another action type? [Request it](../../../issues/new/choose).
 | `daily_budget_exceeded` | Would go over the daily money limit |
 | `customer_limit_review` | Would go over the customer's 30-day money limit, so it needs approval |
 | `approval_required` | Above the approval threshold |
+| `approval_always_required` | This action type always needs approval for this agent |
+| `action_daily_limit` | Daily limit for this action type reached |
+| `action_money_limit` | Would go over the daily money limit for this action type |
+| `outside_working_hours` | Outside the working hours set for the agent |
 | `order_already_cancelled` | The order is already cancelled |
 | `order_already_fulfilled` | The order has shipped; the customer needs a return |
+| `order_value_too_high` | The order is above the largest value the agent may cancel |
+| `order_being_packed` | The order is being packed, so it can no longer be cancelled |
 | `fulfillment_in_progress` | The order is being packed, so cancelling needs approval |
 | `order_already_shipped` | Shipped or being packed, so the address can't change |
 | `address_region_changed` | The new address is in another country or region |
+| `recent_contact_change` | The customer's contact details changed recently |
+| `repeated_identity_change` | Contact details changed recently, so another change is not allowed |
 | `high_value_order` | A high-value order |
 | `identity_change_requires_approval` | Changing the account email always needs approval |
 | `new_device`, `location_mismatch` | From the `signals` you sent |
